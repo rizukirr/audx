@@ -236,10 +236,10 @@ The encoder includes:
 
 ### Quick Compliance Summary
 
-**Personal/Non-Commercial Use**: Free to use with all codecs
-**Commercial Use**: Verify patent requirements for your jurisdiction
-**Distribution**: Must include LICENSE and LEGAL_NOTICES.md files
-**Modifications**: Must maintain MIT license for audx, LGPL for FFmpeg libraries
+- **Personal/Non-Commercial Use**: Free to use with all codecs
+- **Commercial Use**: Verify patent requirements for your jurisdiction
+- **Distribution**: Must include LICENSE and LEGAL_NOTICES.md files
+- **Modifications**: Must maintain MIT license for audx, LGPL for FFmpeg libraries
 
 For FFmpeg legal information: https://www.ffmpeg.org/legal.html
 
