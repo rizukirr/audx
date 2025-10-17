@@ -5,6 +5,33 @@
 #include <string.h>
 
 /**
+ * @brief Print version information.
+ */
+static void print_version(void) {
+  printf("audx version %s\n", AUDX_VERSION);
+  printf("A flexible audio transcoding tool built on FFmpeg\n\n");
+
+  printf("FFmpeg libraries:\n");
+  printf("  libavcodec     %u.%u.%u\n",
+         LIBAVCODEC_VERSION_MAJOR, LIBAVCODEC_VERSION_MINOR, LIBAVCODEC_VERSION_MICRO);
+  printf("  libavformat    %u.%u.%u\n",
+         LIBAVFORMAT_VERSION_MAJOR, LIBAVFORMAT_VERSION_MINOR, LIBAVFORMAT_VERSION_MICRO);
+  printf("  libavutil      %u.%u.%u\n",
+         LIBAVUTIL_VERSION_MAJOR, LIBAVUTIL_VERSION_MINOR, LIBAVUTIL_VERSION_MICRO);
+  printf("  libavfilter    %u.%u.%u\n",
+         LIBAVFILTER_VERSION_MAJOR, LIBAVFILTER_VERSION_MINOR, LIBAVFILTER_VERSION_MICRO);
+  printf("  libswresample  %u.%u.%u\n\n",
+         LIBSWRESAMPLE_VERSION_MAJOR, LIBSWRESAMPLE_VERSION_MINOR, LIBSWRESAMPLE_VERSION_MICRO);
+
+  printf("License:\n");
+  printf("  audx: MIT License\n");
+  printf("  FFmpeg libraries: LGPL 2.1 or later\n");
+  printf("  See LEGAL_NOTICES.md for details\n\n");
+
+  printf("FFmpeg source: https://ffmpeg.org/\n");
+}
+
+/**
  * @brief Print usage information for audx.
  */
 static void print_usage(const char *prog_name) {
@@ -13,7 +40,9 @@ static void print_usage(const char *prog_name) {
   fprintf(stderr, "  --codec=<name>       Encoder codec (libmp3lame, aac, libopus, flac, alac, pcm_s16le)\n");
   fprintf(stderr, "  --quality=<preset>   Quality preset: low, medium, high, extreme (default: high)\n");
   fprintf(stderr, "  --bitrate=<rate>     Explicit bitrate (e.g., 192k, 320k) - overrides quality\n");
-  fprintf(stderr, "  --filter=<desc>      FFmpeg filter chain (e.g., \"atempo=1.25,volume=0.5\")\n\n");
+  fprintf(stderr, "  --filter=<desc>      FFmpeg filter chain (e.g., \"atempo=1.25,volume=0.5\")\n");
+  fprintf(stderr, "  -h, --help           Show this help message\n");
+  fprintf(stderr, "  -v, --version        Show version information\n\n");
   fprintf(stderr, "EXAMPLES:\n");
   fprintf(stderr, "  %s input.mp3 output.opus --codec=libopus --quality=high\n", prog_name);
   fprintf(stderr, "  %s input.mp3 output.mp3 --codec=libmp3lame --bitrate=320k --filter=\"atempo=1.25\"\n", prog_name);
@@ -38,6 +67,18 @@ static enum audio_quality parse_quality(const char *quality_str) {
 }
 
 int main(int argc, char *argv[]) {
+  /* Check for --help/-h or --version/-v flags */
+  for (int i = 1; i < argc; i++) {
+    if (strcmp(argv[i], "--help") == 0 || strcmp(argv[i], "-h") == 0) {
+      print_usage(argv[0]);
+      return 0;
+    }
+    if (strcmp(argv[i], "--version") == 0 || strcmp(argv[i], "-v") == 0) {
+      print_version();
+      return 0;
+    }
+  }
+
   if (argc < 3) {
     print_usage(argv[0]);
     return 1;

@@ -142,11 +142,23 @@ int audio_filter_init(struct audio_filter *filter, int sample_rate,
    * inputs points to the sink (abuffersink)
    */
   outputs->name = av_strdup("in");
+  if (!outputs->name) {
+    ret = AVERROR(ENOMEM);
+    avfilter_inout_free(&outputs);
+    avfilter_inout_free(&inputs);
+    goto fail;
+  }
   outputs->filter_ctx = src_ctx;
   outputs->pad_idx = 0;
   outputs->next = NULL;
 
   inputs->name = av_strdup("out");
+  if (!inputs->name) {
+    ret = AVERROR(ENOMEM);
+    avfilter_inout_free(&outputs);
+    avfilter_inout_free(&inputs);
+    goto fail;
+  }
   inputs->filter_ctx = sink_ctx;
   inputs->pad_idx = 0;
   inputs->next = NULL;
@@ -159,8 +171,6 @@ int audio_filter_init(struct audio_filter *filter, int sample_rate,
   ret = avfilter_graph_parse_ptr(graph, filter_desc, &inputs, &outputs, NULL);
   if (ret < 0) {
     fprintf(stderr, "graph_parse_ptr failed: %s\n", av_err2str(ret));
-    inputs = NULL;
-    outputs = NULL;
     goto fail;
   }
 
@@ -235,7 +245,12 @@ int audio_filter_pull(struct audio_filter *filter, AVFrame **out_frame) {
     return AVERROR(ENOMEM);
   }
 
-  return av_buffersink_get_frame(filter->sink_ctx, *out_frame);
+  int ret = av_buffersink_get_frame(filter->sink_ctx, *out_frame);
+  if (ret < 0) {
+    av_frame_free(out_frame);
+    *out_frame = NULL;
+  }
+  return ret;
 }
 
 /**

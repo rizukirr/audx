@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 4.0)
-project(audx LANGUAGES C)
+project(audx VERSION 1.0.0 LANGUAGES C)
 
 set(CMAKE_C_FLAGS_DEBUG "-Wall -Wextra")
 set(CMAKE_C_FLAGS_RELEASE "-O2")
@@ -33,6 +33,7 @@ endif()
 file(GLOB_RECURSE SRC_FILES "src/*.c")
 add_executable(audx main.c ${SRC_FILES})
 target_include_directories(audx PUBLIC include)
+target_compile_definitions(audx PRIVATE AUDX_VERSION="${PROJECT_VERSION}")
 
 include_directories(${FFMPEG_INCLUDE_DIRS})
 link_directories(${FFMPEG_LIBRARY_DIRS})

@@ -1,6 +1,9 @@
 #include "../include/audio_enc.h"
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
+#include <stdint.h>
+#include <errno.h>
 
 /**
  * @brief Print a human-readable FFmpeg error message.
@@ -121,13 +124,27 @@ int audio_enc_init(struct audio_enc *encoder, const char *filename,
   /* Set bitrate or compression level */
   if (bitrate_str) {
     /* Parse explicit bitrate string (e.g., "192k") */
-    int64_t bitrate = 0;
-    char unit = 0;
-    if (sscanf(bitrate_str, "%ld%c", &bitrate, &unit) >= 1) {
-      if (unit == 'k' || unit == 'K')
-        bitrate *= 1000;
-      encoder->codec_ctx->bit_rate = bitrate;
+    char *endptr;
+    errno = 0;
+    int64_t bitrate = strtoll(bitrate_str, &endptr, 10);
+
+    if (errno == ERANGE || bitrate < 0) {
+      fprintf(stderr, "Invalid bitrate value: %s\n", bitrate_str);
+      ret = AVERROR(EINVAL);
+      goto fail;
     }
+
+    if (*endptr == 'k' || *endptr == 'K') {
+      /* Check for overflow before multiplication */
+      if (bitrate > INT64_MAX / 1000) {
+        fprintf(stderr, "Bitrate value too large: %s\n", bitrate_str);
+        ret = AVERROR(EINVAL);
+        goto fail;
+      }
+      bitrate *= 1000;
+    }
+
+    encoder->codec_ctx->bit_rate = bitrate;
   } else {
     /* Use quality preset */
     int bitrate = get_bitrate_for_quality(codec_name, quality);
@@ -449,6 +466,10 @@ void audio_enc_free(struct audio_enc *encoder) {
   /* Free audio FIFO */
   if (encoder->fifo)
     av_audio_fifo_free(encoder->fifo);
+
+  /* Free resampler context */
+  if (encoder->swr_ctx)
+    swr_free(&encoder->swr_ctx);
 
   /* Free packet */
   if (encoder->pkt)

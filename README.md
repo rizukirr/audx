@@ -71,23 +71,23 @@ audx <input> <output> [OPTIONS]
 
 ### Lossy Codecs
 
-| Codec | Name | Quality Bitrates |
-|-------|------|------------------|
-| MP3 | libmp3lame | 128k / 192k / 256k / 320k |
-| AAC | aac | 96k / 160k / 256k / 320k |
-| Opus | libopus | 96k / 128k / 192k / 256k |
+| Codec | Name       | Quality Bitrates          |
+| ----- | ---------- | ------------------------- |
+| MP3   | libmp3lame | 128k / 192k / 256k / 320k |
+| AAC   | aac        | 96k / 160k / 256k / 320k  |
+| Opus  | libopus    | 96k / 128k / 192k / 256k  |
 
 ### Lossless Codecs
 
 | Codec | Name | Compression Levels |
-|-------|------|-------------------|
-| FLAC | flac | 5 / 8 / 10 / 12 |
-| ALAC | alac | 5 / 8 / 10 / 12 |
+| ----- | ---- | ------------------ |
+| FLAC  | flac | 5 / 8 / 10 / 12    |
+| ALAC  | alac | 5 / 8 / 10 / 12    |
 
 ### Raw Audio
 
-| Format | Name | Description |
-|--------|------|-------------|
+| Format  | Name      | Description                     |
+| ------- | --------- | ------------------------------- |
 | WAV/PCM | pcm_s16le | 16-bit signed little-endian PCM |
 
 ## Examples
@@ -95,16 +95,19 @@ audx <input> <output> [OPTIONS]
 ### Basic Transcoding
 
 Convert MP3 to Opus with high quality:
+
 ```bash
 audx input.mp3 output.opus --codec=libopus --quality=high
 ```
 
 Convert FLAC to MP3 with explicit bitrate:
+
 ```bash
 audx input.flac output.mp3 --codec=libmp3lame --bitrate=320k
 ```
 
 Convert to lossless FLAC:
+
 ```bash
 audx input.mp3 output.flac --codec=flac --quality=extreme
 ```
@@ -112,21 +115,25 @@ audx input.mp3 output.flac --codec=flac --quality=extreme
 ### Audio Filtering
 
 Speed up audio by 25%:
+
 ```bash
 audx input.mp3 output.mp3 --codec=libmp3lame --quality=high --filter="atempo=1.25"
 ```
 
 Reduce volume by 50%:
+
 ```bash
 audx input.mp3 output.mp3 --codec=libmp3lame --quality=high --filter="volume=0.5"
 ```
 
 Chain multiple filters:
+
 ```bash
 audx input.mp3 output.mp3 --codec=libmp3lame --bitrate=320k --filter="atempo=1.25,volume=0.8"
 ```
 
 Apply audio effects:
+
 ```bash
 audx input.mp3 output.mp3 --codec=libmp3lame --quality=high \
   --filter="acrusher=level_in=1:level_out=1:bits=8:mode=log:aa=1"
@@ -135,11 +142,13 @@ audx input.mp3 output.mp3 --codec=libmp3lame --quality=high \
 ### Raw PCM Output
 
 Extract raw PCM data (no encoding):
+
 ```bash
 audx input.mp3 output.pcm
 ```
 
 Play raw PCM with ffplay:
+
 ```bash
 ffplay -f s16le -ar 44100 -ac 2 output.pcm
 ```
@@ -150,21 +159,21 @@ Quality presets map to codec-specific settings:
 
 ### For Lossy Codecs (bitrate in kbps)
 
-| Preset | MP3 | AAC | Opus |
-|--------|-----|-----|------|
-| low | 128 | 96 | 96 |
-| medium | 192 | 160 | 128 |
-| high | 256 | 256 | 192 |
-| extreme | 320 | 320 | 256 |
+| Preset  | MP3 | AAC | Opus |
+| ------- | --- | --- | ---- |
+| low     | 128 | 96  | 96   |
+| medium  | 192 | 160 | 128  |
+| high    | 256 | 256 | 192  |
+| extreme | 320 | 320 | 256  |
 
 ### For Lossless Codecs (compression level)
 
-| Preset | FLAC/ALAC |
-|--------|-----------|
-| low | 5 |
-| medium | 8 |
-| high | 10 |
-| extreme | 12 |
+| Preset  | FLAC/ALAC |
+| ------- | --------- |
+| low     | 5         |
+| medium  | 8         |
+| high    | 10        |
+| extreme | 12        |
 
 Higher compression levels result in smaller file sizes with slower encoding.
 
@@ -208,14 +217,31 @@ audx implements a complete audio processing pipeline:
 4. **Muxer** - Writes encoded data to output container
 
 The encoder includes:
+
 - AVAudioFifo buffer for frame size management
 - SwrContext for automatic format conversion
 - Dynamic format detection and conversion
 
 ## License
 
-This project uses FFmpeg libraries which are licensed under LGPL 2.1 or later.
-Check FFmpeg licensing at: https://www.ffmpeg.org/legal.html
+**audx source code** is licensed under the [MIT License](LICENSE).
+
+**FFmpeg libraries** used by audx are licensed under the LGPL 2.1 or later.
+
+### Important Legal Information
+
+⚠️ **For Commercial Use**: Some audio codecs (particularly AAC) may require patent licenses in certain jurisdictions, independent of copyright licensing. Consult with a lawyer before using audx in commercial products.
+
+📄 **Complete licensing information, FFmpeg compliance details, and patent notices**: See [LEGAL_NOTICES.md](LEGAL_NOTICES.md)
+
+### Quick Compliance Summary
+
+✅ **Personal/Non-Commercial Use**: Free to use with all codecs
+✅ **Commercial Use**: Verify patent requirements for your jurisdiction
+✅ **Distribution**: Must include LICENSE and LEGAL_NOTICES.md files
+✅ **Modifications**: Must maintain MIT license for audx, LGPL for FFmpeg libraries
+
+For FFmpeg legal information: https://www.ffmpeg.org/legal.html
 
 ## References
 
