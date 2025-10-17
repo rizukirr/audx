@@ -81,7 +81,8 @@ struct audio_enc {
    * @brief Audio FIFO buffer for frame size management.
    *
    * Buffers samples to ensure frames sent to encoder have the correct size.
-   * Required because encoders like MP3 need fixed frame sizes (e.g., 1152 samples).
+   * Required because encoders like MP3 need fixed frame sizes (e.g., 1152
+   * samples).
    */
   AVAudioFifo *fifo;
 
@@ -114,7 +115,8 @@ struct audio_enc {
  * @param sample_rate Output sample rate in Hz (e.g., 44100).
  * @param ch_layout Channel layout structure (e.g., stereo, mono).
  * @param quality Quality preset (AUDIO_QUALITY_LOW to AUDIO_QUALITY_EXTREME).
- * @param bitrate_str Explicit bitrate string (e.g., "192k"), or NULL to use quality preset.
+ * @param bitrate_str Explicit bitrate string (e.g., "192k"), or NULL to use
+ * quality preset.
  * @return 0 on success, negative AVERROR code on failure.
  */
 int audio_enc_init(struct audio_enc *encoder, const char *filename,

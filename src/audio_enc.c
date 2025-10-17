@@ -114,9 +114,14 @@ int audio_enc_init(struct audio_enc *encoder, const char *filename,
     goto fail;
   }
 
-  /* Select sample format supported by the encoder */
-  if (encoder->codec->sample_fmts) {
-    encoder->codec_ctx->sample_fmt = encoder->codec->sample_fmts[0];
+  /* Select sample format supported by the encoder (using modern API) */
+  const enum AVSampleFormat *sample_fmts = NULL;
+  int num_fmts = 0;
+  if (avcodec_get_supported_config(NULL, encoder->codec,
+                                    AV_CODEC_CONFIG_SAMPLE_FORMAT, 0,
+                                    (const void **)&sample_fmts, &num_fmts) >= 0 &&
+      num_fmts > 0) {
+    encoder->codec_ctx->sample_fmt = sample_fmts[0];
   } else {
     encoder->codec_ctx->sample_fmt = AV_SAMPLE_FMT_S16;
   }
