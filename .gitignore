@@ -1,0 +1,96 @@
+# Build directories
+build/
+cmake-build-*/
+
+# CMake files
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+install_manifest.txt
+CTestTestfile.cmake
+Makefile
+
+# Compiled Object files
+*.o
+*.obj
+*.ko
+*.elf
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
+*.so
+*.so.*
+*.dylib
+*.dll
+
+# Compiled Static libraries
+*.a
+*.la
+*.lib
+*.lo
+
+# Executables
+*.exe
+*.out
+*.app
+audx
+*.i*86
+*.x86_64
+*.hex
+
+# Debug files
+*.dSYM/
+*.su
+*.idb
+*.pdb
+
+# Test output files (audio)
+test_*.mp3
+test_*.flac
+test_*.m4a
+test_*.wav
+test_*.aac
+test_*.ogg
+*_output.*
+*_filtered.*
+
+# IDE and Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+*.sublime-project
+*.sublime-workspace
+.clangd/
+compile_commands.json
+
+# System files
+.DS_Store
+Thumbs.db
+.directory
+
+# Backup files
+*.bak
+*.backup
+*~
+
+# Core dumps
+core
+core.*
+vgcore.*
+
+# Package files
+*.tar.gz
+*.zip
+*.7z
+*.rar
+
+# Documentation build artifacts
+docs/_build/
+doc/_build/
+*.pdf
